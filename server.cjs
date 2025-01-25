@@ -1,6 +1,7 @@
+// server.cjs
 const express = require('express');
-const { detectBot } = require('./services/botDetectionService.cjs'); // Import `detectBot`
-const { prerenderReactSite } = require('./api/prerender.cjs');
+const { detectBot } = require('./services/botDetectionService.cjs'); // Import bot detection
+const { prerenderReactSite } = require('./api/prerender.cjs'); // Import prerendering function
 const { getPosts, createPost } = require('./api/posts.cjs');
 const { getBooks, createBook } = require('./api/books.cjs');
 const { getPages, createPage } = require('./api/pages.cjs');
@@ -18,12 +19,17 @@ app.use(express.json());
 app.get('*', async (req, res) => {
   const userAgent = req.headers['user-agent'];
 
-  if (detectBot(userAgent)) { // Use `detectBot` here to detect if the request is from a bot
+  // Detect if it's a bot
+  if (detectBot(userAgent)) {
     console.log('Bot detected, prerendering content...');
-    const prerenderedHtml = await prerenderReactSite('https://yourwebsite.com'); // Replace with your React site URL
-    res.send(prerenderedHtml);
+    try {
+      const prerenderedHtml = await prerenderReactSite('https://yourwebsite.com'); // Replace with your React site URL
+      res.send(prerenderedHtml); // Send prerendered content for bots
+    } catch (error) {
+      res.status(500).send('Error during prerendering');
+    }
   } else {
-    res.sendFile(__dirname + '/index.html'); // Serve the regular React app
+    res.sendFile(__dirname + '/index.html'); // Serve the regular React app for non-bots
   }
 });
 
