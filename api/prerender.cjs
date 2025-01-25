@@ -1,15 +1,12 @@
 // api/prerender.cjs
-const axios = require('axios');
 
-const prerenderReactSite = async (siteUrl) => {
-  try {
-    // Logic to prerender the site (replace with actual prerendering)
-    const response = await axios.get(siteUrl); // Example for pre-rendering
-    return response.data; // Returning the prerendered HTML
-  } catch (error) {
-    console.error('Error during prerendering:', error);
-    throw new Error('Prerendering failed');
-  }
+const fs = require('fs');
+const path = require('path');
+
+const prerenderReactSite = () => {
+  // For simplicity, we’ll load a static prerendered HTML file
+  const prerenderedHtml = fs.readFileSync(path.join(__dirname, 'prerendered.html'), 'utf8');
+  return prerenderedHtml;
 };
 
 module.exports = { prerenderReactSite };

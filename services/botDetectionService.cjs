@@ -1,8 +1,8 @@
-const useragent = require('express-useragent');
+// services/botDetectionService.cjs
 
 function detectBot(userAgent) {
-  const ua = useragent.parse(userAgent);
-  return ua.isBot; // This returns true if the user-agent belongs to a bot
+  const botRegex = /(bot|googlebot|crawler|spider|robot|crawling)/i;
+  return botRegex.test(userAgent);  // Returns true if user-agent matches common bots
 }
 
 module.exports = { detectBot };
